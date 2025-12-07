@@ -1,4 +1,4 @@
-FROM nginx:1.24.0-alpine
+FROM nginx
 WORKDIR /opt/app
 RUN rm -rf /usr/share/nginx/html/index.html
 RUN rm -rf /etc/nginx/conf.d/default.conf
