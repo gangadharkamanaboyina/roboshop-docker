@@ -1,7 +1,7 @@
 FROM nginx:1.24.0-alpine
-WORKDIR /opt/app/
-RUN rm -rf /usr/share/nginx/html/*
-COPY static /usr/share/nginx/html/
+WORKDIR /opt/app
+RUN rm -rf /usr/share/nginx/html/index.html
+RUN rm -rf /etc/nginx/conf.d/default.conf
 RUN rm -rf /etc/nginx/nginx.conf
+COPY static /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/nginx.conf
-CMD ["nginx", "-g", "daemon off;"]
