@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20.19-alpine
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 WORKDIR  /opt/app
 COPY *.js *.json /opt/app/
