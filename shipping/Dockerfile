@@ -1,7 +1,7 @@
 FROM maven:3.9.11
 EXPOSE 8080
-RUN groupadd -r roboshop && useradd -r -g roboshop roboshop
-USER roboshop
+# RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
+# USER roboshop
 WORKDIR /opt/app
 COPY pom.xml .
 COPY src ./src 

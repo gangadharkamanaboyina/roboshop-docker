@@ -1,8 +1,8 @@
 FROM python:3.9
 EXPOSE 8080
 WORKDIR /opt/app
-RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
-USER roboshop
+# RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
+# USER roboshop
 COPY *.py .
 COPY payment.ini . 
 COPY requirements.txt .
