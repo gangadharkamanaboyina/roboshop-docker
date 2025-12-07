@@ -1,6 +1,6 @@
 FROM maven:3.9.11
 EXPOSE 8080
-RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
+RUN groupadd -r roboshop && useradd -r -g roboshop roboshop
 USER roboshop
 WORKDIR /opt/app
 COPY src ./src \

@@ -3,9 +3,9 @@ EXPOSE 8080
 WORKDIR /opt/app
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 USER roboshop
-COPY *.py /opt/app/ \
-     payment.ini /opt/app/ \
-     requirements.txt /opt/app/
+COPY *.py ./ \
+     payment.ini ./ \
+     requirements.txt ./
 RUN pip3 install -r requirements.txt
 ENV CART_HOST="cart" \
     CART_PORT="8080" \
