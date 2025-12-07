@@ -1,6 +1,6 @@
 FROM python:3.12-alpine
 EXPOSE 8080
-WORKDIR /opt/app/
+WORKDIR /opt/app
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 USER roboshop
 COPY *.py /opt/app/ \
