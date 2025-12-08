@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     image: mongodb:v1
     container_name: mongodb
+    volumes:
+      -mongodb: /data/db
   
   redis:
     build: 
@@ -13,6 +15,8 @@ services:
       dockerfile: Dockerfile
     image: redis:v1
     container_name: redis
+    volumes:
+      -redis: /data
 
   mysql:
     build: 
@@ -20,6 +24,8 @@ services:
       dockerfile: Dockerfile
     image: mysql:v1
     container_name: mysql
+    volumes:
+      -mysql: /var/lib/mysql
 
   rabbitmq:
     build: 
@@ -27,6 +33,8 @@ services:
       dockerfile: Dockerfile
     image: rabbitmq:v1
     container_name: rabbitmq
+    volumes:
+      -rabbitmq: /var/lib/rabbitmq
   
   catalogue:
     build:
@@ -98,3 +106,9 @@ networks:
     driver: bridge
     name: roboshop
     external: false
+
+volumes:
+  mongodb:
+  redis:
+  mysql:
+  rabbitmq:
