@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     pcre-dev
 # Only requirements first for caching
 COPY requirements.txt .
-# Install into /install
+# Install into /install (just like you did)
 RUN pip3 install --prefix=/install -r requirements.txt
 
 
@@ -25,9 +25,9 @@ RUN apk add --no-cache pcre
 # Create non-root user
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 # Copy installed packages from builder
-COPY --from=builder /install /usr/local
+COPY --from=builder /install /usr/local 
 # Copy app files
-COPY --chown=roboshop:roboshop payment.ini *.py requirements.txt /opt/server/
+COPY --chown=roboshop:roboshop payment.ini *.py requirements.txt .
 ENV CART_HOST="cart" \
     CART_PORT="8080" \
     USER_HOST="user" \
@@ -40,25 +40,18 @@ USER roboshop
 CMD ["uwsgi", "--ini", "payment.ini"]
 
 
-
-# FROM python:3.9.25-alpine3.22 AS builder
+# FROM python:3.9
 # EXPOSE 8080
-# WORKDIR /opt/app
+# WORKDIR /opt/server
+# COPY payment.ini .
 # COPY *.py .
-# COPY payment.ini . 
 # COPY requirements.txt .
 # RUN pip3 install -r requirements.txt
-
-# FROM python:3.9.25-alpine3.22
-# WORKDIR /opt/app
-# RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
-# COPY --from=builder --chown=roboshop:roboshop /opt/app /opt/app/
-# USER roboshop
 # ENV CART_HOST="cart" \
 #     CART_PORT="8080" \
 #     USER_HOST="user" \
 #     USER_PORT="8080" \
 #     AMQP_HOST="rabbitmq" \
 #     AMQP_USER="roboshop" \
-#     AMQP_PASS=roboshop123
-# CMD [ "uwsgi", "--ini", "payment.ini" ]
+#     AMQP_PASS="roboshop123"
+# CMD ["uwsgi","--ini","payment.ini"]
