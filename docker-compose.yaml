@@ -1,0 +1,100 @@
+version: "1.0"
+services:
+  mongodb:
+    build: 
+      context: ./mongodb
+      dockerfile: Dockerfile
+    image: mongodb:v1
+    container_name: mongodb
+  
+  redis:
+    build: 
+      context: ./redis
+      dockerfile: Dockerfile
+    image: redis:v1
+    container_name: redis
+
+  mysql:
+    build: 
+      context: ./mysql
+      dockerfile: Dockerfile
+    image: mysql:v1
+    container_name: mysql
+
+  rabbitmq:
+    build: 
+      context: ./rabbitmq
+      dockerfile: Dockerfile
+    image: rabbitmq:v1
+    container_name: rabbitmq
+  
+  catalogue:
+    build:
+      context: ./catalogue
+      dockerfile: Dockerfile
+    image: catalogue:v1
+    container_name: catalogue
+    depends_on:
+      - mongodb
+  
+  user:
+    build: 
+      context: ./user
+      dockerfile: Dockerfile
+    image: user:v1
+    container_name: user
+    depends_on:
+      - redis
+      - mongodb
+
+  cart:
+    build: 
+      context: ./cart
+      dockerfile: Dockerfile
+    image: cart:v1
+    container_name: cart
+    depends_on:
+      - redis
+      - catalogue
+  
+  shipping:
+    build: 
+      context: ./shipping
+      dockerfile: Dockerfile
+    image: shipping:v1
+    container_name: shipping
+    depends_on:
+      - cart
+      - mysql
+    
+  payment:
+    build: 
+      context: ./payment
+      dockerfile: Dockerfile
+    image: payment:v1
+    container_name: payment
+    depends_on:
+      - rabbitmq
+      - cart
+      - user
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend:v1
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - catalogue
+      - user
+      - cart
+      - shipping
+      - payment
+
+networks:
+  default:
+    driver: bridge
+    name: roboshop
+    external: false
