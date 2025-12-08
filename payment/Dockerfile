@@ -25,9 +25,9 @@ RUN apk add --no-cache pcre
 # Create non-root user
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
 # Copy installed packages from builder
-COPY --from=builder --chown=roboshop:roboshop /install /usr/local
+COPY --from=builder /install /usr/local
 # Copy app files
-COPY payment.ini *.py requirements.txt /opt/server/
+COPY --chown=roboshop:roboshop payment.ini *.py requirements.txt /opt/server/
 ENV CART_HOST="cart" \
     CART_PORT="8080" \
     USER_HOST="user" \
