@@ -22,8 +22,10 @@ EXPOSE 8080
 WORKDIR /opt/server
 # Runtime deps only
 RUN apk add --no-cache pcre
-# Create non-root user with UID 1001 to match uwsgi config
-RUN addgroup -S roboshop && adduser -S -u 1001 roboshop -G roboshop
+    # Create non-root group/user with GID/UID 1001 to match uwsgi config
+    # ensure the group with GID 1001 exists so uwsgi can setgid(1001)
+    RUN addgroup -S -g 1001 roboshop \
+     && adduser -S -u 1001 -G roboshop roboshop
 # Copy installed packages from builder
 COPY --from=builder /install /usr/local 
 # Copy app files
@@ -37,6 +39,6 @@ ENV CART_HOST="cart" \
     AMQP_PASS="roboshop123"
 
 USER roboshop
-HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=30s \
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
   CMD python -c "import socket; socket.create_connection(('127.0.0.1', 8080), timeout=5)" || exit 1
 CMD ["uwsgi", "--ini", "payment.ini"]
