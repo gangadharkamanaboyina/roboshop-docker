@@ -71,13 +71,6 @@ services:
       context: ./catalogue
       dockerfile: Dockerfile
     image: gangadhar3011/catalogue:v1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
     depends_on:
       - mongodb
   
@@ -86,13 +79,6 @@ services:
       context: ./user
       dockerfile: Dockerfile
     image: gangadhar3011/user:v1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
     depends_on:
       - redis
       - mongodb
@@ -102,13 +88,6 @@ services:
       context: ./cart
       dockerfile: Dockerfile
     image: gangadhar3011/cart:v1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
     depends_on:
       - redis
       - catalogue
@@ -118,13 +97,6 @@ services:
       context: ./shipping
       dockerfile: Dockerfile
     image: gangadhar3011/shipping:v1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
     depends_on:
       - cart
       - mysql
@@ -134,13 +106,6 @@ services:
       context: ./payment
       dockerfile: Dockerfile
     image: gangadhar3011/payment:v1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
     depends_on:
       - rabbitmq
       - cart
@@ -151,13 +116,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     image: gangadhar3011/frontend:v1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:80 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
     ports:
       - "80:80"
     depends_on:
