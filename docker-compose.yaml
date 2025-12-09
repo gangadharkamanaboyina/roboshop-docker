@@ -1,10 +1,18 @@
+version: "3.8"
+
 services:
   mongodb:
     build: 
       context: ./mongodb
       dockerfile: Dockerfile
     image: gangadhar3011/mongodb:v1
-    container_name: mongodb
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "command -v mongo >/dev/null 2>&1 && mongo --eval \"db.adminCommand('ping')\" >/dev/null 2>&1 || (command -v nc >/dev/null 2>&1 && nc -z 127.0.0.1 27017)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
       - mongodb:/data/db
   
@@ -13,7 +21,13 @@ services:
       context: ./redis
       dockerfile: Dockerfile
     image: gangadhar3011/redis:v1
-    container_name: redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "command -v redis-cli >/dev/null 2>&1 && redis-cli ping >/dev/null 2>&1 || (command -v nc >/dev/null 2>&1 && nc -z 127.0.0.1 6379)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - redis:/data
 
@@ -22,7 +36,18 @@ services:
       context: ./mysql
       dockerfile: Dockerfile
     image: gangadhar3011/mysql:v1
-    container_name: mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "command -v mysqladmin >/dev/null 2>&1 && mysqladmin ping -h 127.0.0.1 >/dev/null 2>&1 || (command -v nc >/dev/null 2>&1 && nc -z 127.0.0.1 3306)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      MYSQL_ROOT_PASSWORD: changeme_root_password
+      MYSQL_DATABASE: roboshop
+      MYSQL_USER: roboshop
+      MYSQL_PASSWORD: roboshoppass
     volumes:
       - mysql:/var/lib/mysql
 
@@ -31,7 +56,13 @@ services:
       context: ./rabbitmq
       dockerfile: Dockerfile
     image: gangadhar3011/rabbitmq:v1
-    container_name: rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 5672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     volumes:
       - rabbitmq:/var/lib/rabbitmq
   
@@ -40,7 +71,13 @@ services:
       context: ./catalogue
       dockerfile: Dockerfile
     image: gangadhar3011/catalogue:v1
-    container_name: catalogue
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       - mongodb
   
@@ -49,7 +86,13 @@ services:
       context: ./user
       dockerfile: Dockerfile
     image: gangadhar3011/user:v1
-    container_name: user
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       - redis
       - mongodb
@@ -59,7 +102,13 @@ services:
       context: ./cart
       dockerfile: Dockerfile
     image: gangadhar3011/cart:v1
-    container_name: cart
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       - redis
       - catalogue
@@ -69,7 +118,13 @@ services:
       context: ./shipping
       dockerfile: Dockerfile
     image: gangadhar3011/shipping:v1
-    container_name: shipping
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       - cart
       - mysql
@@ -79,7 +134,13 @@ services:
       context: ./payment
       dockerfile: Dockerfile
     image: gangadhar3011/payment:v1
-    container_name: payment
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       - rabbitmq
       - cart
@@ -90,7 +151,13 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     image: gangadhar3011/frontend:v1
-    container_name: frontend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:80 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     ports:
       - "80:80"
     depends_on:

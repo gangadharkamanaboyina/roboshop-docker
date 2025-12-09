@@ -37,17 +37,9 @@ ENV CART_HOST="cart" \
     AMQP_PASS="roboshop123"
 
 USER roboshop
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+  CMD python -c "import socket; socket.create_connection(('127.0.0.1', 8080), timeout=5)" || exit 1
 CMD ["uwsgi", "--ini", "payment.ini"]
-
-
-# FROM python:3.9
-# EXPOSE 8080
-# WORKDIR /opt/server
-# COPY payment.ini .
-# COPY *.py .
-# COPY requirements.txt .
-# RUN pip3 install -r requirements.txt
-# ENV CART_HOST="cart" \
 #     CART_PORT="8080" \
 #     USER_HOST="user" \
 #     USER_PORT="8080" \
